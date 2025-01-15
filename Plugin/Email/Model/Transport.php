@@ -6,6 +6,7 @@ use Magento\Framework\Exception\MailException;
 use Magento\Store\Model\ScopeInterface;
 use Mailjet\Mailjet\Helper\Data;
 use Magento\Email\Model\Transport as ModelTransport;
+use Laminas\Mail\Message;
 
 class Transport
 {
@@ -72,19 +73,18 @@ class Transport
             );
 
             try {
-
-                $zendMessage = \Zend\Mail\Message::fromString(
+                $messageObject = Message::fromString(
                     $subject->getMessage()->getRawMessage()
                 )->setEncoding('utf-8');
                 if (2 === $isSetReturnPath && $returnPathValue) {
-                    $zendMessage->setSender($returnPathValue);
-                } elseif (1 === $isSetReturnPath && $zendMessage->getFrom()->count()) {
-                    $fromAddressList = $zendMessage->getFrom();
+                    $messageObject->setSender($returnPathValue);
+                } elseif (1 === $isSetReturnPath && $messageObject->getFrom()->count()) {
+                    $fromAddressList = $messageObject->getFrom();
                     $fromAddressList->rewind();
-                    $zendMessage->setSender($fromAddressList->current()->getEmail());
+                    $messageObject->setSender($fromAddressList->current()->getEmail());
                 }
 
-                $smtp->sendSmtpMessage($zendMessage, $config);
+                $smtp->sendSmtpMessage($messageObject, $config);
             } catch (\Exception $e) {
                 throw new MailException(new \Magento\Framework\Phrase($e->getMessage()), $e);
             }

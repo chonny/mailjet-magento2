@@ -3,6 +3,7 @@
 namespace Mailjet\Mailjet\Helper;
 
 use Mailjet\Mailjet\Helper\MailjetAPI as MailjetAPI;
+use Laminas\Http\Client\Adapter\Socket;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -258,9 +259,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     private $encryptor;
 
     /**
-     * @var \Zend\Http\Client\Adapter\Socket
+     * @var Socket
      */
-    private $zendHttpClient;
+    private $httpClient;
 
     /**
      * Data constructor.
@@ -270,7 +271,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
      * @param \Magento\Framework\UrlInterface $urlBuilder
      * @param \Magento\Framework\Encryption\Encryptor $encryptor
-     * @param \Zend\Http\Client\Adapter\Socket $zendHttpClient
+     * @param Socket $httpClient
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context                        $context,
@@ -278,13 +279,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\App\Cache\TypeListInterface               $cacheTypeList,
         \Magento\Framework\UrlInterface                              $urlBuilder,
         \Magento\Framework\Encryption\Encryptor                      $encryptor,
-        \Zend\Http\Client\Adapter\Socket                             $zendHttpClient
+        Socket                                                       $httpClient
     ) {
         $this->config = $config;
         $this->cacheTypeList = $cacheTypeList;
         $this->urlBuilder = $urlBuilder;
         $this->encryptor = $encryptor;
-        $this->zendHttpClient = $zendHttpClient;
+        $this->httpClient = $httpClient;
 
         parent::__construct($context);
     }
@@ -387,12 +388,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function testSmtpConnection($port, $ssl)
     {
         try {
-            $this->zendHttpClient->setOptions(['ssltransport' => $ssl, 'timeout' => 5]);
+            $this->httpClient->setOptions(['ssltransport' => $ssl, 'timeout' => 5]);
 
             if ($ssl == 'tls') {
-                $this->zendHttpClient->connect(\Mailjet\Mailjet\Helper\Data::SMTP_HOST, $port);
+                $this->httpClient->connect(\Mailjet\Mailjet\Helper\Data::SMTP_HOST, $port);
             } else {
-                $this->zendHttpClient->connect('ssl://' . \Mailjet\Mailjet\Helper\Data::SMTP_HOST, $port);
+                $this->httpClient->connect('ssl://' . \Mailjet\Mailjet\Helper\Data::SMTP_HOST, $port);
             }
 
             return true;

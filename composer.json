@@ -8,6 +8,8 @@
     "type": "magento2-module",
     "version": "1.0.1",
     "require": {
-        "mailjet/mailjet-apiv3-php": "*"
+        "mailjet/mailjet-apiv3-php": "*",
+        "laminas/laminas-http": "*",
+        "laminas/laminas-mail": "*"
     }
 }

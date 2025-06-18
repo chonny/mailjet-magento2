@@ -1,5 +1,5 @@
 {
-    "name": "mailjet/mailjet-magento2",
+    "name": "chonny/mailjet-magento2",
     "autoload": {
         "psr-4": {"Mailjet\\Mailjet\\":""},
         "files": ["registration.php"]
